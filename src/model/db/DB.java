@@ -17,7 +17,7 @@ public class DB {
 
 		Properties propriedades = new Properties();
 		try {
-			FileInputStream arquivo = new FileInputStream("./propriedades/db.properties");
+			FileInputStream arquivo = new FileInputStream("./src/propriedades/db.properties");
 			propriedades.load(arquivo);
 		} catch (IOException e) {
 			e.printStackTrace();

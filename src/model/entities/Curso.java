@@ -41,7 +41,6 @@ public class Curso {
 		return Objects.hash(nomeCurso);
 	}
 
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
