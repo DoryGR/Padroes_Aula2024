@@ -1,5 +1,6 @@
 package view;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
@@ -9,11 +10,12 @@ import model.dao.FactoryDAO;
 import model.entities.Curso;
 
 public class TelaCurso {
-
-	static CursoDAO cursoDAO = FactoryDAO.createCursoDAO();
 	
-	public static Scanner menuCurso(Scanner console) throws InterruptedException {
-		
+	static CursoDAO cursoDao = FactoryDAO.createCursoDAO();
+	
+	@SuppressWarnings("resource")
+	public static Scanner menuCurso(Scanner console) throws InterruptedException, ParseException {
+
 		int opcao = 0;
 		do {
 			System.out.println("\n\n");
@@ -34,9 +36,9 @@ public class TelaCurso {
 					break;
 			case 2:	console = listar(console);
 					break;
-			case 3: //console = alterar(console);
+			case 3: console = alterar(console);
 					break;
-			case 4: //console = excluir(console);
+			case 4: console = excluir(console);
 					break;
 			case 0:	console = TelaPrincipal.menuPrincipal(console);
 					break;
@@ -48,23 +50,9 @@ public class TelaCurso {
 		return console;
 	}
 	
-	private static Scanner listar(Scanner console) {
+	private static Scanner cadastrar(Scanner console) throws ParseException {
 		
-		List<Curso> cursos = cursoDAO.findAll();
-		System.out.println("\n\n");
-		System.out.println("    ###   Curso-Lista ###");
-		System.out.println(" #id  \t  Nome ###");
-		
-		for ( Curso c : cursos ) {
-			System.out.println( c.getIdcurso() + "\t" + c.getNomeCurso());
-		}
-		console.nextLine();
-		return console;
-	}
-
-	private static Scanner cadastrar(Scanner console) {
-		
-		Curso c = new Curso();
+		Curso c = new Curso(); 
 		
 		System.out.println("\n\n");
 		System.out.println("    ###   Curso-Cadastrar ###");
@@ -72,12 +60,66 @@ public class TelaCurso {
 		
 		System.out.print("    |     Nome: "); 
 	    c.setNomeCurso(console.nextLine());
-		cursoDAO.insert(c);
-		console.nextLine();
 	    
 	    System.out.println("    =========================");
 	    
+	    cursoDao.insert(c);
+	    
+	    console.nextLine();
+	    return console;
+	} 
+	
+	private static Scanner listar(Scanner console) {
+				
+		List<Curso> cursos = cursoDao.findAll();
+		
+		System.out.println("\n\n");
+		System.out.println("    ###   Curso-Listar    ###");
+		System.out.println("    =========================");
+		System.out.println("    |     Id\tNome");
+		for(Curso c : cursos) { 
+			System.out.println("    |     " + c.getIdcurso()
+							 + "\t" 		+ c.getNomeCurso() ); 
+		}
+		System.out.println("    =========================");
+		console.nextLine();
 		return console;
 	}
+	
+	private static Scanner alterar(Scanner console) throws ParseException {
+		
+		Curso c = new Curso(); 
+		
+		System.out.println("\n\n");
+		System.out.println("    ###   Curso-Alterar   ###");
+		System.out.println("    =========================");  		
+		System.out.print("    |     Id: "); 
+		c.setIdcurso(console.nextInt()); 
+		console.nextLine();
+		  
+		System.out.print("    |     Nome: "); 
+		c.setNomeCurso(console.nextLine());
+		  
+		System.out.println("    =========================");
+		cursoDao.update(c);
+		
+		console.nextLine();
+		return console;
+	} 
+	
+	private static Scanner excluir(Scanner console) throws ParseException {
 
+		System.out.println("\n\n");
+		System.out.println("    ###   Curso-Excluir   ###");
+		System.out.println("    =========================");
+		System.out.print("    |     Digite o Id: ");
+		int id = console.nextInt();
+		console.nextLine();
+		System.out.println("    =========================");
+		
+		cursoDao.deleteByid(id);
+		
+		console.nextLine();
+		return console;
+	}
 }
